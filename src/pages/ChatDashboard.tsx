@@ -92,12 +92,9 @@ const ChatDashboard: React.FC = () => {
   useEffect(() => {
     // Connect to socket server
     socket.connect();
-    console.log('Connecting to Socket...');
 
     // Handle incoming messages from webhook
     socket.on('message_received', (newMessage: Message) => {
-      console.log('Socket Message Received:', newMessage);
-      
       // If message belongs to the active conversation, append it!
       if (activeChat && newMessage.userId === activeChat.userId) {
         setMessages((prev) => {
@@ -113,8 +110,6 @@ const ChatDashboard: React.FC = () => {
 
     // Handle outgoing message confirmation
     socket.on('message_sent', (sentMessage: Message) => {
-      console.log('Socket Message Sent Confirm:', sentMessage);
-      
       if (activeChat && sentMessage.userId === activeChat.userId) {
         setMessages((prev) => {
           if (prev.some((m) => m.id === sentMessage.id)) return prev;
@@ -125,8 +120,6 @@ const ChatDashboard: React.FC = () => {
 
     // Handle sidebar updates (last message, timestamp, unread increments)
     socket.on('chat_updated', (updatedChat: Chat) => {
-      console.log('Socket Chat Updated:', updatedChat);
-      
       setChats((prevChats) => {
         // Remove existing entry and place the updated chat at the top
         const filtered = prevChats.filter((c) => c.userId !== updatedChat.userId);
@@ -145,7 +138,6 @@ const ChatDashboard: React.FC = () => {
       socket.off('message_sent');
       socket.off('chat_updated');
       socket.disconnect();
-      console.log('Disconnecting from Socket.');
     };
   }, [activeChat]);
 
